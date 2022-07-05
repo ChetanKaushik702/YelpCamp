@@ -3,10 +3,10 @@ const path = require("path");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
-const Joi = require("joi");
 const Campground = require("./models/campground");
 const asyncErrorHandler = require("./utils/asyncErrorHandler");
 const ErrorHandler = require("./utils/ExpressError");
+const { campgroundSchema } = require("./schemas");
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp");
 
@@ -24,6 +24,16 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+
+const validateCampground = (req, res, next) => {
+  const { error } = campgroundSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(", ");
+    throw new ErrorHandler(msg, 400);
+  } else {
+    next();
+  }
+};
 
 app.get("/", (req, res) => {
   res.render("home");
@@ -43,24 +53,8 @@ app.get("/campgrounds/new", (req, res) => {
 
 app.post(
   "/campgrounds",
+  validateCampground,
   asyncErrorHandler(async (req, res) => {
-    const campgroundSchema = Joi.object({
-      campground: Joi.object({
-        title: Joi.string().required(),
-        price: Joi.number().required().min(0),
-        image: Joi.string().required(),
-        location: Joi.string().required(),
-        description: Joi.string().required(),
-      }).required(),
-    });
-
-    const { error } = campgroundSchema.validate(req.body);
-
-    if (error) {
-      const msg = error.details.map((el) => el.message).join(", ");
-      throw new ErrorHandler(msg, 400);
-    }
-
     const camp = await Campground.create(req.body.campground);
     res.redirect(`/campgrounds/${camp._id}`);
   })
@@ -84,6 +78,7 @@ app.get(
 
 app.put(
   "/campgrounds/:id",
+  validateCampground,
   asyncErrorHandler(async (req, res) => {
     const campground = await Campground.findByIdAndUpdate(
       req.params.id,
@@ -102,7 +97,7 @@ app.delete(
 );
 
 app.all("*", (req, res, next) => {
-  next(new ErrorHandler("Not Found", 404));
+  next(new ErrorHandler("Page Not Found", 404));
 });
 
 app.use((err, req, res, next) => {
