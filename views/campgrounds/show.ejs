@@ -35,7 +35,7 @@
   <div class="col-6">
     <h2>Leave a Review</h2>
     <form
-      action="/campgrounds/<%= campground._id %>/reviews"
+      action="/camps/<%= campground._id %>/reviews"
       method="POST"
       class="mb-3 needs-validation"
       novalidate
@@ -71,7 +71,7 @@
         <h5 class="card-title">Rating: <%= review.rating %></h5>
         <p class="card-text">Review: <%= review.body %></p>
         <form
-          action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE"
+          action="/camps/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE"
           method="POST"
         >
           <button class="btn btn-danger btn-sm" type="submit">Delete</button>
