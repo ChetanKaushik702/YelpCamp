@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const Campground = require("../models/campground");
-const Review = require("../models/review");
+const Campground = require("../models/campgroundModel");
+const Review = require("../models/reviewModel");
 const cities = require("./cities");
 const { places, descriptors } = require("./seedHelpers");
 
@@ -23,6 +23,7 @@ const seedDB = async () => {
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
       title: `${sample(descriptors)} ${sample(places)}`,
       image: "https://source.unsplash.com/collection/483251",
+      author: "62c540dc0cfbacd4393bd72b",
       description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. ",
       price: Math.floor(Math.random() * 100) + 100,
     });
