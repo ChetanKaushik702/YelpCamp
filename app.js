@@ -6,8 +6,12 @@ const flash = require("connect-flash");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const ErrorHandler = require("./utils/ExpressError");
-const campgrounds = require("./routes/campgrounds");
-const reviews = require("./routes/reviews");
+const campgroundsRoutes = require("./routes/campgroundsRoutes");
+const reviewsRoutes = require("./routes/reviewsRoutes");
+const userRoutes = require("./routes/userRoutes");
+const LocalStrategy = require("passport-local");
+const passport = require("passport");
+const User = require("./models/userModel");
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp");
 
@@ -41,6 +45,13 @@ const sessionConfig = {
 app.use(flash());
 app.use(session(sessionConfig));
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.errors = req.flash("errors");
@@ -51,8 +62,9 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.use("/campgrounds", campgrounds);
-app.use("/camps/:id/reviews", reviews);
+app.use("", userRoutes);
+app.use("/campgrounds", campgroundsRoutes);
+app.use("/camps/:id/reviews", reviewsRoutes);
 
 app.all("*", (req, res, next) => {
   next(new ErrorHandler("Page Not Found", 404));

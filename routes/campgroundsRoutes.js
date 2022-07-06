@@ -1,6 +1,6 @@
 const express = require("express");
 const asyncErrorHandler = require("../utils/asyncErrorHandler");
-const Campground = require("../models/campground");
+const Campground = require("../models/campgroundModel");
 const ErrorHandler = require("../utils/ExpressError");
 const { campgroundSchema } = require("../schemas");
 
