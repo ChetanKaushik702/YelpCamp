@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
@@ -12,6 +15,7 @@ const userRoutes = require("./routes/userRoutes");
 const LocalStrategy = require("passport-local");
 const passport = require("passport");
 const User = require("./models/userModel");
+const multer = require("multer");
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp");
 
@@ -32,7 +36,7 @@ app.use(methodOverride("_method"));
 app.use(express.static("public"));
 
 const sessionConfig = {
-  secret: "thisshouldbeabettersecret",
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {

@@ -8,6 +8,9 @@ const {
   updateACampground,
   deleteACampground,
 } = require("../controllers/campgroundsController");
+const multer = require("multer");
+const { storage } = require("../cloudinary");
+const upload = multer({ storage });
 
 const { isLoggedIn, validateCampground, isAuthor } = require("../middleware");
 
@@ -17,7 +20,13 @@ router.get("/", index);
 
 router.get("/new", isLoggedIn, getNewCampground);
 
-router.post("/", isLoggedIn, validateCampground, addNewCampground);
+router.post(
+  "/",
+  isLoggedIn,
+  upload.array("image"),
+  validateCampground,
+  addNewCampground
+);
 
 router.get("/:id", getACampgroundById);
 

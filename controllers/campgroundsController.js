@@ -12,6 +12,10 @@ module.exports.getNewCampground = (req, res) => {
 
 module.exports.addNewCampground = asyncErrorHandler(async (req, res) => {
   req.body.campground.author = req.user._id;
+  req.body.campground.images = req.files.map((f) => ({
+    url: f.path,
+    filename: f.filename,
+  }));
   const camp = await Campground.create(req.body.campground);
   req.flash("success", "Campground created successfully!");
   res.redirect(`/campgrounds/${camp._id}`);
@@ -25,7 +29,8 @@ module.exports.getACampgroundById = asyncErrorHandler(async (req, res) => {
         path: "author",
       },
     })
-    .populate("author");
+    .populate("author")
+    .populate("images");
   if (!campground) {
     req.flash("errors", "Cannot find that campground!");
     return res.redirect("/campgrounds");
