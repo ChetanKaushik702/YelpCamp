@@ -36,6 +36,7 @@ app.use(methodOverride("_method"));
 app.use(express.static("public"));
 
 const sessionConfig = {
+  name: "session",
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
