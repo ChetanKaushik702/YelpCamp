@@ -43,7 +43,7 @@ const isAuthor = asyncErrorHandler(async (req, res, next) => {
 });
 
 const isReviewAuthor = asyncErrorHandler(async (req, res, next) => {
-  const review = await Review.findById(req.params.id);
+  const review = await Review.findById(req.params.reviewId);
   if (!review || review.author.toString() !== req.user._id.toString()) {
     req.flash("errors", "You don't have permission to do that!");
     return res.redirect("/campgrounds/" + req.params.id);
