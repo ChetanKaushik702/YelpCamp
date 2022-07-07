@@ -32,7 +32,14 @@ router.get("/:id", getACampgroundById);
 
 router.get("/:id/edit", isLoggedIn, getEditACampground);
 
-router.put("/:id", isLoggedIn, isAuthor, validateCampground, updateACampground);
+router.put(
+  "/:id",
+  isLoggedIn,
+  isAuthor,
+  upload.array("image"),
+  validateCampground,
+  updateACampground
+);
 
 router.delete("/:id", isLoggedIn, isAuthor, deleteACampground);
 
